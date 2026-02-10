@@ -48,10 +48,30 @@ rollButton.addEventListener("click", function () {
     }
 });
 holdButton.addEventListener("click", function () {
-    p0Current += p0Score;
-    p0Score = 0;
-    p0CurrentElement.textContent = p0Current.toString();
-    p0ScoreElement.textContent = p0Score.toString();
+    if (player0Element.classList.contains("player--active")) {
+        p0Current += p0Score;
+        p0Score = 0;
+        p0CurrentElement.textContent = p0Current.toString();
+        p0ScoreElement.textContent = p0Score.toString();
+        player0Element.classList.remove("player--active");
+        player1Element.classList.add("player--active");
+    }
+    else {
+        p1Current += p1Score;
+        p1Score = 0;
+        p1CurrentElement.textContent = p1Current.toString();
+        p1ScoreElement.textContent = p1Score.toString();
+        player0Element.classList.add("player--active");
+        player1Element.classList.remove("player--active");
+    }
+    if (p0Current >= 100) {
+        player0Element.classList.add("player--winner");
+        player0Element.classList.remove("player--active");
+    }
+    else if (p1Current >= 100) {
+        player1Element.classList.add("player--winner");
+        player1Element.classList.remove("player--active");
+    }
 });
 newButton.addEventListener("click", function () {
     p0Score = 0;
