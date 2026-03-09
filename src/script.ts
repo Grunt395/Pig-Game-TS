@@ -16,6 +16,10 @@ const diceElement = select(".dice") as HTMLImageElement;
 const rollButton = select(".btn--roll") as HTMLButtonElement;
 const holdButton = select(".btn--hold") as HTMLButtonElement;
 const newButton = select(".btn--new") as HTMLButtonElement;
+const infoButton = select(".btn--info") as HTMLButtonElement;
+const closeInfoButton = select(".close--info") as HTMLButtonElement;
+const info = select(".info") as HTMLDivElement;
+const overlay = select(".overlay") as HTMLDivElement;
 
 // Numeric Variables
 let activePlayer: 0 | 1 = 0;
@@ -28,9 +32,17 @@ function swapPlayer() {
     players.forEach((elem) => elem.classList.toggle("player--active"));
 }
 
+// Toggle Info and Overlay Modal Function
+function toggleInfo() {
+    info.hidden ? info.hidden = false : info.hidden = true;
+    overlay.hidden ? overlay.hidden = false : overlay.hidden = true;
+}
+
 // Initial State Changes
 p0TempElement.textContent = tempScore.toString();
 p1TempElement.textContent = tempScore.toString();
+diceElement.hidden = true;
+toggleInfo();
 
 // Roll Dice Button
 rollButton.addEventListener("click", function () {
@@ -86,4 +98,18 @@ newButton.addEventListener("click", function () {
     players[0].classList.add("player--active");
     rollButton.disabled = false;
     holdButton.disabled = false;
+});
+
+// Info Button
+infoButton.addEventListener("click", toggleInfo);
+
+// Close Information Modal
+closeInfoButton.addEventListener("click", toggleInfo);
+overlay.addEventListener("click", toggleInfo);
+
+// ESC key Close Functionality
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && info.hidden === false) {
+        toggleInfo();
+    }
 });

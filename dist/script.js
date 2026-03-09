@@ -12,6 +12,10 @@ const diceElement = select(".dice");
 const rollButton = select(".btn--roll");
 const holdButton = select(".btn--hold");
 const newButton = select(".btn--new");
+const infoButton = select(".btn--info");
+const closeInfoButton = select(".close--info");
+const info = select(".info");
+const overlay = select(".overlay");
 let activePlayer = 0;
 let tempScore = 0;
 let savedScore = [0, 0];
@@ -19,8 +23,14 @@ function swapPlayer() {
     activePlayer = activePlayer ? 0 : 1;
     players.forEach((elem) => elem.classList.toggle("player--active"));
 }
+function toggleInfo() {
+    info.hidden ? info.hidden = false : info.hidden = true;
+    overlay.hidden ? overlay.hidden = false : overlay.hidden = true;
+}
 p0TempElement.textContent = tempScore.toString();
 p1TempElement.textContent = tempScore.toString();
+diceElement.hidden = true;
+toggleInfo();
 rollButton.addEventListener("click", function () {
     const randNum = Math.floor((Math.random() * 6) + 1);
     diceElement.src = `./dice/dice-${randNum}.png`;
@@ -62,5 +72,13 @@ newButton.addEventListener("click", function () {
     players[0].classList.add("player--active");
     rollButton.disabled = false;
     holdButton.disabled = false;
+});
+infoButton.addEventListener("click", toggleInfo);
+closeInfoButton.addEventListener("click", toggleInfo);
+overlay.addEventListener("click", toggleInfo);
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && info.hidden === false) {
+        toggleInfo();
+    }
 });
 export {};

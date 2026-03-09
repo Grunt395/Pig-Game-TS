@@ -28,11 +28,31 @@
             </div>
         </section>
 
-        <img src="./dice/dice-5.png" alt="Playing dice" class="dice" hidden />
+        <img src="./dice/dice-5.png" alt="Playing dice" class="dice" />
+        <button class="btn btn--info">ℹ️</button>
         <button class="btn btn--new">🔄 New game</button>
         <button class="btn btn--roll">🎲 Roll dice</button>
         <button class="btn btn--hold">📥 Hold</button>
     </main>
+
+    <div class="info">
+        <button class="close--info">&times;</button>
+        <h1 class="info-header">HOW TO PLAY:</h1>
+        <ul class="info-body">
+            <li>Two Players are needed to play this game.</li>
+            <li>Players can click the <strong>"Roll Dice"</strong> button to roll the dice <strong>(1-6)</strong>.</li>
+            <li>The current score below a player will increment with each successive dice roll.</li>
+            <li>If a player rolls a <strong>1, <u>their turn will abruptly end</strong></u>, and any accrued points will
+                be lost.
+            </li>
+            <li>Click the <strong>"Hold"</strong> button to save the current score and rack up points!</li>
+            <li>Upon holding a score, the current turn will end.</li>
+            <li>The first player to "Hold" <strong>100 points</strong> is the winner!</li>
+            <li>Click the <strong>"New Game"</strong> button to reset the game!</li>
+        </ul>
+        <p class="info-footer">Click the X or press ESC to close this window!</p>
+    </div>
+    <div class="overlay"></div>
 
     <script type="module" src="./dist/script.js"></script>
 </body>
