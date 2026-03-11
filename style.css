@@ -141,11 +141,19 @@ main {
 }
 
 .btn--roll {
-    top: 39.3rem;
+    top: 41rem;
+    height: 8rem;
+    font-size: 2rem;
 }
 
 .btn--hold {
-    top: 46.1rem;
+    /* position: static; */
+    position: relative;
+    left: 7rem;
+    bottom: 3rem;
+    /* margin-bottom: 2rem; */
+    /* top: 46.1rem; */
+
 }
 
 .btn:active {

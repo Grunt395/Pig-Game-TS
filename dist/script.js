@@ -10,7 +10,7 @@ const p1TempElement = select(".temp--1");
 const players = Array.from(document.querySelectorAll(".player"));
 const diceElement = select(".dice");
 const rollButton = select(".btn--roll");
-const holdButton = select(".btn--hold");
+const holdButton = Array.from(document.querySelectorAll(".btn--hold"));
 const newButton = select(".btn--new");
 const infoButton = select(".btn--info");
 const closeInfoButton = select(".close--info");
@@ -22,16 +22,9 @@ let savedScore = [0, 0];
 function swapPlayer() {
     activePlayer = activePlayer ? 0 : 1;
     players.forEach((elem) => elem.classList.toggle("player--active"));
+    holdButton.forEach((elem) => elem.hidden = !elem.hidden);
 }
-function toggleInfo() {
-    info.hidden ? info.hidden = false : info.hidden = true;
-    overlay.hidden ? overlay.hidden = false : overlay.hidden = true;
-}
-p0TempElement.textContent = tempScore.toString();
-p1TempElement.textContent = tempScore.toString();
-diceElement.hidden = true;
-toggleInfo();
-rollButton.addEventListener("click", function () {
+function rollDice() {
     const randNum = Math.floor((Math.random() * 6) + 1);
     diceElement.src = `./dice/dice-${randNum}.png`;
     diceElement.hidden = false;
@@ -44,8 +37,8 @@ rollButton.addEventListener("click", function () {
         select(`.temp--${activePlayer}`).textContent = tempScore.toString();
         swapPlayer();
     }
-});
-holdButton.addEventListener("click", function () {
+}
+function holdScore() {
     savedScore[activePlayer] += tempScore;
     select(`.score--${activePlayer}`).textContent = savedScore[activePlayer].toString();
     tempScore = 0;
@@ -54,10 +47,40 @@ holdButton.addEventListener("click", function () {
         players[activePlayer].classList.remove("player--active");
         players[activePlayer].classList.add("player--winner");
         rollButton.disabled = true;
-        holdButton.disabled = true;
+        holdButton[0].disabled = true;
+        holdButton[1].disabled = true;
     }
     else {
         swapPlayer();
+    }
+}
+function toggleInfo() {
+    info.hidden = !info.hidden;
+    overlay.hidden = !overlay.hidden;
+}
+p0TempElement.textContent = tempScore.toString();
+p1TempElement.textContent = tempScore.toString();
+diceElement.hidden = true;
+rollButton.addEventListener("click", rollDice);
+for (let i = 0; i < holdButton.length; i++) {
+    holdButton[i].addEventListener("click", holdScore);
+}
+document.addEventListener("keyup", function (e) {
+    if (e.code === "Space" && savedScore[activePlayer] < 100) {
+        rollDice();
+    }
+});
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && savedScore[activePlayer] < 100) {
+        holdScore();
+    }
+});
+infoButton.addEventListener("click", toggleInfo);
+closeInfoButton.addEventListener("click", toggleInfo);
+overlay.addEventListener("click", toggleInfo);
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && info.hidden === false) {
+        toggleInfo();
     }
 });
 newButton.addEventListener("click", function () {
@@ -71,14 +94,9 @@ newButton.addEventListener("click", function () {
     players.forEach(elem => elem.classList.remove("player--winner", "player--active"));
     players[0].classList.add("player--active");
     rollButton.disabled = false;
-    holdButton.disabled = false;
-});
-infoButton.addEventListener("click", toggleInfo);
-closeInfoButton.addEventListener("click", toggleInfo);
-overlay.addEventListener("click", toggleInfo);
-document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && info.hidden === false) {
-        toggleInfo();
-    }
+    holdButton[0].hidden = false;
+    holdButton[1].hidden = true;
+    holdButton[0].disabled = false;
+    holdButton[1].disabled = false;
 });
 export {};

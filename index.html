@@ -14,6 +14,7 @@
         <section class="player player--0 player--active">
             <h2 class="name name--0">Player 1</h2>
             <p class="score temp--0">43</p>
+            <button class="btn btn--hold">📥 Hold</button>
             <div class="current">
                 <p class="current-label">Saved Score</p>
                 <p class="current-score score--0">0</p>
@@ -22,6 +23,7 @@
         <section class="player player--1">
             <h2 class="name name--1">Player 2</h2>
             <p class="score temp--1">24</p>
+            <button class="btn btn--hold" hidden>📥 Hold</button>
             <div class="current">
                 <p class="current-label">Saved Score</p>
                 <p class="current-score score--1">0</p>
@@ -32,10 +34,9 @@
         <button class="btn btn--info">ℹ️</button>
         <button class="btn btn--new">🔄 New game</button>
         <button class="btn btn--roll">🎲 Roll dice</button>
-        <button class="btn btn--hold">📥 Hold</button>
     </main>
 
-    <div class="info">
+    <div class="info" hidden>
         <button class="close--info">&times;</button>
         <h1 class="info-header">HOW TO PLAY:</h1>
         <ul class="info-body">
@@ -49,10 +50,13 @@
             <li>Upon holding a score, the current turn will end.</li>
             <li>The first player to "Hold" <strong>100 points</strong> is the winner!</li>
             <li>Click the <strong>"New Game"</strong> button to reset the game!</li>
+            <p>(Tip: Players can press the <strong>SPACE</strong> key to roll the dice or the <strong>ENTER</strong> key
+                to hold their
+                score!)</p>
         </ul>
         <p class="info-footer">Click the X or press ESC to close this window!</p>
     </div>
-    <div class="overlay"></div>
+    <div class="overlay" hidden></div>
 
     <script type="module" src="./dist/script.js"></script>
 </body>

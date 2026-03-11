@@ -14,7 +14,7 @@ const players = Array.from(document.querySelectorAll(".player"));
 
 const diceElement = select(".dice") as HTMLImageElement;
 const rollButton = select(".btn--roll") as HTMLButtonElement;
-const holdButton = select(".btn--hold") as HTMLButtonElement;
+const holdButton = Array.from(document.querySelectorAll<HTMLButtonElement>(".btn--hold"));
 const newButton = select(".btn--new") as HTMLButtonElement;
 const infoButton = select(".btn--info") as HTMLButtonElement;
 const closeInfoButton = select(".close--info") as HTMLButtonElement;
@@ -30,22 +30,11 @@ let savedScore: number[] = [0, 0];
 function swapPlayer() {
     activePlayer = activePlayer ? 0 : 1;
     players.forEach((elem) => elem.classList.toggle("player--active"));
+    holdButton.forEach((elem) => elem.hidden = !elem.hidden);
 }
 
-// Toggle Info and Overlay Modal Function
-function toggleInfo() {
-    info.hidden ? info.hidden = false : info.hidden = true;
-    overlay.hidden ? overlay.hidden = false : overlay.hidden = true;
-}
-
-// Initial State Changes
-p0TempElement.textContent = tempScore.toString();
-p1TempElement.textContent = tempScore.toString();
-diceElement.hidden = true;
-toggleInfo();
-
-// Roll Dice Button
-rollButton.addEventListener("click", function () {
+// Roll Dice Function
+function rollDice() {
     const randNum: number = Math.floor((Math.random() * 6) + 1);
     
     diceElement.src = `./dice/dice-${randNum}.png`;
@@ -61,12 +50,10 @@ rollButton.addEventListener("click", function () {
         select(`.temp--${activePlayer}`).textContent = tempScore.toString();
         swapPlayer();
     }
+}
 
-});
-
-// Hold Score Button
-holdButton.addEventListener("click", function () {
-
+// Hold Score Function
+function holdScore() {
     savedScore[activePlayer] += tempScore;
     select(`.score--${activePlayer}`).textContent = savedScore[activePlayer].toString();
 
@@ -77,11 +64,59 @@ holdButton.addEventListener("click", function () {
         players[activePlayer].classList.remove("player--active");
         players[activePlayer].classList.add("player--winner");
         rollButton.disabled = true;
-        holdButton.disabled = true;
+        holdButton[0].disabled = true;
+        holdButton[1].disabled = true;
     }
 
     else {
         swapPlayer();
+    }
+}
+
+// Toggle Info and Overlay Modal Function
+function toggleInfo() {
+    info.hidden = !info.hidden;
+    overlay.hidden = !overlay.hidden;
+}
+
+// Initial State Changes
+p0TempElement.textContent = tempScore.toString();
+p1TempElement.textContent = tempScore.toString();
+diceElement.hidden = true;
+
+// Roll Dice Button
+rollButton.addEventListener("click", rollDice);
+
+// Hold Score Button
+for (let i = 0; i < holdButton.length; i++) {
+    holdButton[i].addEventListener("click", holdScore);
+}
+
+// Space key Roll Functionality
+document.addEventListener("keyup", function (e) {
+    if (e.code === "Space" && savedScore[activePlayer] < 100) {
+        rollDice();
+    }
+});
+
+// Enter key Hold Functionality
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && savedScore[activePlayer] < 100) {
+        holdScore();
+    }
+});
+
+// Info Button
+infoButton.addEventListener("click", toggleInfo);
+
+// Close Information Modal
+closeInfoButton.addEventListener("click", toggleInfo);
+overlay.addEventListener("click", toggleInfo);
+
+// ESC key Close Functionality
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && info.hidden === false) {
+        toggleInfo();
     }
 });
 
@@ -97,19 +132,8 @@ newButton.addEventListener("click", function () {
     players.forEach(elem => elem.classList.remove("player--winner", "player--active"));
     players[0].classList.add("player--active");
     rollButton.disabled = false;
-    holdButton.disabled = false;
-});
-
-// Info Button
-infoButton.addEventListener("click", toggleInfo);
-
-// Close Information Modal
-closeInfoButton.addEventListener("click", toggleInfo);
-overlay.addEventListener("click", toggleInfo);
-
-// ESC key Close Functionality
-document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && info.hidden === false) {
-        toggleInfo();
-    }
+    holdButton[0].hidden = false;
+    holdButton[1].hidden = true;
+    holdButton[0].disabled = false;
+    holdButton[1].disabled = false;
 });
