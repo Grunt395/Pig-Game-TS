@@ -16,6 +16,8 @@ const infoButton = select(".btn--info");
 const closeInfoButton = select(".close--info");
 const info = select(".info");
 const overlay = select(".overlay");
+let enableRoll = true;
+let enableHold = true;
 let activePlayer = 0;
 let tempScore = 0;
 let savedScore = [0, 0];
@@ -23,6 +25,9 @@ function swapPlayer() {
     activePlayer = activePlayer ? 0 : 1;
     players.forEach((elem) => elem.classList.toggle("player--active"));
     holdButton.forEach((elem) => elem.hidden = !elem.hidden);
+    enableRoll = false;
+    enableHold = false;
+    setTimeout(() => { enableRoll = true; enableHold = true; }, 1500);
 }
 function rollDice() {
     const randNum = Math.floor((Math.random() * 6) + 1);
@@ -61,28 +66,43 @@ function toggleInfo() {
 p0TempElement.textContent = tempScore.toString();
 p1TempElement.textContent = tempScore.toString();
 diceElement.hidden = true;
-rollButton.addEventListener("click", rollDice);
-for (let i = 0; i < holdButton.length; i++) {
-    holdButton[i].addEventListener("click", holdScore);
-}
-document.addEventListener("keyup", function (e) {
-    if (e.code === "Space" && savedScore[activePlayer] < 100) {
+rollButton.addEventListener("click", function () {
+    if (enableRoll) {
         rollDice();
     }
 });
+for (let i = 0; i < holdButton.length; i++) {
+    holdButton[i].addEventListener("click", function () {
+        if (enableHold) {
+            holdScore();
+        }
+    });
+}
 document.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && savedScore[activePlayer] < 100) {
-        holdScore();
+    e.preventDefault();
+    if (e.key === "Escape" && info.hidden === false) {
+        toggleInfo();
+        return;
+    }
+    if (e.repeat || savedScore[activePlayer] >= 100 || !info.hidden) {
+        return;
+    }
+    switch (e.key) {
+        case " ":
+            if (enableRoll) {
+                rollDice();
+            }
+            break;
+        case "Enter":
+            if (enableHold) {
+                holdScore();
+            }
+            break;
     }
 });
 infoButton.addEventListener("click", toggleInfo);
 closeInfoButton.addEventListener("click", toggleInfo);
 overlay.addEventListener("click", toggleInfo);
-document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && info.hidden === false) {
-        toggleInfo();
-    }
-});
 newButton.addEventListener("click", function () {
     tempScore = 0;
     savedScore = [0, 0];

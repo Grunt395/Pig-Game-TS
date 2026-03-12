@@ -21,6 +21,9 @@ const closeInfoButton = select(".close--info") as HTMLButtonElement;
 const info = select(".info") as HTMLDivElement;
 const overlay = select(".overlay") as HTMLDivElement;
 
+let enableRoll = true;
+let enableHold = true;
+
 // Numeric Variables
 let activePlayer: 0 | 1 = 0;
 let tempScore: number = 0;
@@ -31,6 +34,9 @@ function swapPlayer() {
     activePlayer = activePlayer ? 0 : 1;
     players.forEach((elem) => elem.classList.toggle("player--active"));
     holdButton.forEach((elem) => elem.hidden = !elem.hidden);
+    enableRoll = false;
+    enableHold = false;
+    setTimeout(() => {enableRoll = true; enableHold = true;}, 1500);
 }
 
 // Roll Dice Function
@@ -85,24 +91,42 @@ p1TempElement.textContent = tempScore.toString();
 diceElement.hidden = true;
 
 // Roll Dice Button
-rollButton.addEventListener("click", rollDice);
-
-// Hold Score Button
-for (let i = 0; i < holdButton.length; i++) {
-    holdButton[i].addEventListener("click", holdScore);
-}
-
-// Space key Roll Functionality
-document.addEventListener("keyup", function (e) {
-    if (e.code === "Space" && savedScore[activePlayer] < 100) {
+rollButton.addEventListener("click", function () {
+    if (enableRoll) {
         rollDice();
     }
 });
 
-// Enter key Hold Functionality
+// Hold Score Button
+for (let i = 0; i < holdButton.length; i++) {
+    holdButton[i].addEventListener("click", function () {
+        if (enableHold) {
+            holdScore();
+        }
+    });
+}
+
+// Keyboard Controls Functionality
 document.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && savedScore[activePlayer] < 100) {
-        holdScore();
+    e.preventDefault();
+    if (e.key === "Escape" && info.hidden === false) {
+        toggleInfo();
+        return;
+    }
+    if (e.repeat || savedScore[activePlayer] >= 100 || !info.hidden) {
+        return;
+    }
+    switch (e.key) {
+        case " ":
+            if (enableRoll) {
+                rollDice();
+            }
+            break;
+        case "Enter":
+            if (enableHold) {
+                holdScore();
+            }
+            break;
     }
 });
 
@@ -112,13 +136,6 @@ infoButton.addEventListener("click", toggleInfo);
 // Close Information Modal
 closeInfoButton.addEventListener("click", toggleInfo);
 overlay.addEventListener("click", toggleInfo);
-
-// ESC key Close Functionality
-document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && info.hidden === false) {
-        toggleInfo();
-    }
-});
 
 // New Game Button
 newButton.addEventListener("click", function () {
